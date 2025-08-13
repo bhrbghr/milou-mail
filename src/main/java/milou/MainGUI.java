@@ -72,6 +72,8 @@ public class MainGUI extends JFrame {
         JButton forwardBtn = new JButton("Forward");
         JButton searchBtn = new JButton("Search Emails");
         JButton readCodeBtn = new JButton("Read by Code");
+        JButton deleteBtn = new JButton("Delete from Inbox");
+
         JButton logoutBtn = new JButton("Logout");
 
         sendBtn.addActionListener(e -> sendEmailUI(null, null, null, null));
@@ -80,6 +82,7 @@ public class MainGUI extends JFrame {
         forwardBtn.addActionListener(e -> forwardEmailUI());
         searchBtn.addActionListener(e -> searchEmailsUI());
         readCodeBtn.addActionListener(e -> readByCodeUI());
+        deleteBtn.addActionListener(e -> deleteEmailUI());
         logoutBtn.addActionListener(e -> {
             loggedInUser = null;
             showWelcomePage();
@@ -93,6 +96,7 @@ public class MainGUI extends JFrame {
         panel.add(forwardBtn);
         panel.add(searchBtn);
         panel.add(readCodeBtn);
+        panel.add(deleteBtn);
         panel.add(logoutBtn);
 
         add(panel, BorderLayout.CENTER);
@@ -317,6 +321,18 @@ public class MainGUI extends JFrame {
             }
         }
     }
+    private void deleteEmailUI() {
+        String code = JOptionPane.showInputDialog(this, "Enter email code to delete from inbox:");
+        if (code != null && !code.isEmpty()) {
+            try {
+                EmailService.deleteEmailForUser(loggedInUser, code);
+                JOptionPane.showMessageDialog(this, "Email removed from your inbox.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+            }
+        }
+    }
+
 
     private String completeEmail(String email) {
         if (!email.contains("@"))

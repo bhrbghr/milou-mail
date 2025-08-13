@@ -87,4 +87,18 @@ public class EmailService {
         if (keyword == null || keyword.isBlank()) return List.of();
         return emailDAO.searchEmails(viewer.getId(), keyword);
     }
+    public static void deleteEmailForUser(User user, String code) {
+        Email email = findByCode(code);
+
+        boolean isRecipient = emailDAO.findRecipients(email.getId())
+                .stream()
+                .anyMatch(u -> u.getId().equals(user.getId()));
+
+        if (!isRecipient) {
+            throw new IllegalArgumentException("You can only delete emails from your own inbox.");
+        }
+
+        emailDAO.deleteEmailForRecipient(email.getId(), user.getId());
+    }
+
 }

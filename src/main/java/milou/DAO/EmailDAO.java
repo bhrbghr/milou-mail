@@ -1,6 +1,4 @@
 package milou.DAO;
-
-
 import milou.core.SessionFactory;
 import milou.model.Email;
 import milou.model.User;
@@ -125,4 +123,17 @@ public class EmailDAO {
                         .getResultList()
         );
     }
+    public void deleteEmailForRecipient(long emailId, long recipientId) {
+        SessionFactory.get().inTransaction(session ->
+                session.createNativeMutationQuery("""
+            delete from email_recipients
+            where email_id = :email_id and recipient_id = :recipient_id
+        """)
+                        .setParameter("email_id", emailId)
+                        .setParameter("recipient_id", recipientId)
+                        .executeUpdate()
+        );
+    }
+
+
 }
