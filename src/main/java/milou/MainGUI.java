@@ -279,6 +279,12 @@ public class MainGUI extends JFrame {
         if (code != null && !code.isEmpty()) {
             try {
                 Email email = EmailService.findByCode(code);
+
+                if (!EmailService.canAccessEmail(loggedInUser, email)) {
+                    JOptionPane.showMessageDialog(this, "You don't have access to this email.");
+                    return;
+                }
+
                 EmailService.readEmail(loggedInUser, email);
 
                 JTextArea contentArea = new JTextArea("From: " + email.getSender().getEmail() +
@@ -298,16 +304,14 @@ public class MainGUI extends JFrame {
     }
 
 
+
     private void replyEmailUI() {
         String code = JOptionPane.showInputDialog(this, "Enter email code to reply:");
         if (code != null && !code.isEmpty()) {
             try {
                 Email email = EmailService.findByCode(code);
 
-                boolean isAllowed = email.getSender().equals(loggedInUser) ||
-                        EmailService.findRecipientsOfEmail(email).contains(loggedInUser);
-
-                if (!isAllowed) {
+                if (!EmailService.canAccessEmail(loggedInUser, email)) {
                     JOptionPane.showMessageDialog(this, "You don't have access to this email.");
                     return;
                 }
@@ -320,16 +324,14 @@ public class MainGUI extends JFrame {
     }
 
 
+
     private void forwardEmailUI() {
         String code = JOptionPane.showInputDialog(this, "Enter email code to forward:");
         if (code != null && !code.isEmpty()) {
             try {
                 Email email = EmailService.findByCode(code);
 
-                boolean isAllowed = email.getSender().equals(loggedInUser) ||
-                        EmailService.findRecipientsOfEmail(email).contains(loggedInUser);
-
-                if (!isAllowed) {
+                if (!EmailService.canAccessEmail(loggedInUser, email)) {
                     JOptionPane.showMessageDialog(this, "You don't have access to this email.");
                     return;
                 }
@@ -340,6 +342,7 @@ public class MainGUI extends JFrame {
             }
         }
     }
+
 
     private void deleteEmailUI() {
         String code = JOptionPane.showInputDialog(this, "Enter email code to delete from inbox:");

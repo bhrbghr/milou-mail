@@ -100,5 +100,9 @@ public class EmailService {
 
         emailDAO.deleteEmailForRecipient(email.getId(), user.getId());
     }
+    public static boolean canAccessEmail(User user, Email email) {
+        return email.getSender().equals(user) || findRecipientsOfEmail(email).contains(user);
+    }
+
 
 }
