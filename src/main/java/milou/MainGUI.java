@@ -303,6 +303,15 @@ public class MainGUI extends JFrame {
         if (code != null && !code.isEmpty()) {
             try {
                 Email email = EmailService.findByCode(code);
+
+                boolean isAllowed = email.getSender().equals(loggedInUser) ||
+                        EmailService.findRecipientsOfEmail(email).contains(loggedInUser);
+
+                if (!isAllowed) {
+                    JOptionPane.showMessageDialog(this, "You don't have access to this email.");
+                    return;
+                }
+
                 sendEmailUI(List.of(email.getSender()), "Re: " + email.getSubject(), "", code);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Email not found for code: " + code);
@@ -310,17 +319,28 @@ public class MainGUI extends JFrame {
         }
     }
 
+
     private void forwardEmailUI() {
         String code = JOptionPane.showInputDialog(this, "Enter email code to forward:");
         if (code != null && !code.isEmpty()) {
             try {
                 Email email = EmailService.findByCode(code);
+
+                boolean isAllowed = email.getSender().equals(loggedInUser) ||
+                        EmailService.findRecipientsOfEmail(email).contains(loggedInUser);
+
+                if (!isAllowed) {
+                    JOptionPane.showMessageDialog(this, "You don't have access to this email.");
+                    return;
+                }
+
                 sendEmailUI(null, "Fwd: " + email.getSubject(), email.getBody(), code);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Email not found for code: " + code);
             }
         }
     }
+
     private void deleteEmailUI() {
         String code = JOptionPane.showInputDialog(this, "Enter email code to delete from inbox:");
         if (code != null && !code.isEmpty()) {
