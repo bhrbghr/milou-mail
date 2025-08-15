@@ -12,4 +12,10 @@ public class SessionFactory {
         }
         return sessionFactory;
     }
+    public static void close() {
+        if (sessionFactory == null) {
+            return;
+        }
+        sessionFactory.close();
+    }
 }
